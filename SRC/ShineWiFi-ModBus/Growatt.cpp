@@ -94,32 +94,23 @@ bool Growatt::ReadInputRegisters() {
 
   // read each fragment separately
   for (int i = 0; i < _Protocol.InputFragmentCount; i++) {
-    res =
-        Modbus.readInputRegisters(_Protocol.InputReadFragments[i].StartAddress,
-                                  _Protocol.InputReadFragments[i].FragmentSize);
+    res = Modbus.readInputRegisters(_Protocol.InputReadFragments[i].StartAddress, _Protocol.InputReadFragments[i].FragmentSize);
     if (res == Modbus.ku8MBSuccess) {
       for (int j = 0; j < _Protocol.InputRegisterCount; j++) {
         // make sure the register we try to read is in the fragment
-        if (_Protocol.InputRegisters[j].address >=
-            _Protocol.InputReadFragments[i].StartAddress) {
+        if (_Protocol.InputRegisters[j].address >= _Protocol.InputReadFragments[i].StartAddress) {
           // when we exceed the fragment size, skip to new fragment
-          if (_Protocol.InputRegisters[j].address >=
-              _Protocol.InputReadFragments[i].StartAddress +
-                  _Protocol.InputReadFragments[i].FragmentSize)
+          if (_Protocol.InputRegisters[j].address >= _Protocol.InputReadFragments[i].StartAddress + _Protocol.InputReadFragments[i].FragmentSize) {
             break;
+          }
           // let's say the register address is 1013 and read window is 1000-1050
           // that means the response in the buffer is on position 1013 - 1000 =
           // 13
-          registerAddress = _Protocol.InputRegisters[j].address -
-                            _Protocol.InputReadFragments[i].StartAddress;
-          if (_Protocol.InputRegisters[j].size == SIZE_16BIT ||
-              _Protocol.InputRegisters[j].size == SIZE_16BIT_S) {
-            _Protocol.InputRegisters[j].value =
-                Modbus.getResponseBuffer(registerAddress);
+          registerAddress = _Protocol.InputRegisters[j].address - _Protocol.InputReadFragments[i].StartAddress;
+          if (_Protocol.InputRegisters[j].size == SIZE_16BIT || _Protocol.InputRegisters[j].size == SIZE_16BIT_S) {
+            _Protocol.InputRegisters[j].value = Modbus.getResponseBuffer(registerAddress);
           } else {
-            _Protocol.InputRegisters[j].value =
-                (Modbus.getResponseBuffer(registerAddress) << 16) +
-                Modbus.getResponseBuffer(registerAddress + 1);
+            _Protocol.InputRegisters[j].value = (Modbus.getResponseBuffer(registerAddress) << 16) + Modbus.getResponseBuffer(registerAddress + 1);
           }
         }
       }
@@ -344,23 +335,17 @@ void Growatt::CreateUIJson(char* Buffer) {
 
 #if SIMULATE_INVERTER != 1
   for (int i = 0; i < _Protocol.InputRegisterCount; i++) {
-    if (_Protocol.InputRegisters[i].frontend == true ||
-        _Protocol.InputRegisters[i].plot == true) {
+    if (_Protocol.InputRegisters[i].frontend == true || _Protocol.InputRegisters[i].plot == true) {
       JsonArray arr = doc.createNestedArray(_Protocol.InputRegisters[i].name);
 
       // value
-      if (_Protocol.InputRegisters[i].multiplier ==
-          (int)_Protocol.InputRegisters[i].multiplier) {
-        arr.add(_Protocol.InputRegisters[i].value *
-                _Protocol.InputRegisters[i].multiplier);
+      if (_Protocol.InputRegisters[i].multiplier == (int)_Protocol.InputRegisters[i].multiplier) {
+        arr.add(_Protocol.InputRegisters[i].value * _Protocol.InputRegisters[i].multiplier);
       } else {
-        arr.add(_round2(_Protocol.InputRegisters[i].value *
-                        _Protocol.InputRegisters[i].multiplier));
+        arr.add(_round2(_Protocol.InputRegisters[i].value * _Protocol.InputRegisters[i].multiplier));
       }
       if (strcmp(_Protocol.InputRegisters[i].name, "InverterStatus") == 0 &&
-          _Protocol.InputRegisters[i].value < statusStrLength) {
-        arr.add(statusStr[_Protocol.InputRegisters[i].value]);  // use unit for
-                                                                // status
+          _Protocol.InputRegisters[i].value < statusStrLength) { arr.add(statusStr[_Protocol.InputRegisters[i].value]);  // use unit for status
       } else {
         arr.add(unitStr[_Protocol.InputRegisters[i].unit]);  // unit
       }
@@ -368,23 +353,17 @@ void Growatt::CreateUIJson(char* Buffer) {
     }
   }
   for (int i = 0; i < _Protocol.HoldingRegisterCount; i++) {
-    if (_Protocol.HoldingRegisters[i].frontend == true ||
-        _Protocol.HoldingRegisters[i].plot == true) {
+    if (_Protocol.HoldingRegisters[i].frontend == true || _Protocol.HoldingRegisters[i].plot == true) {
       JsonArray arr = doc.createNestedArray(_Protocol.HoldingRegisters[i].name);
 
       // value
-      if (_Protocol.HoldingRegisters[i].multiplier ==
-          (int)_Protocol.HoldingRegisters[i].multiplier) {
-        arr.add(_Protocol.HoldingRegisters[i].value *
-                _Protocol.HoldingRegisters[i].multiplier);
+      if (_Protocol.HoldingRegisters[i].multiplier == (int)_Protocol.HoldingRegisters[i].multiplier) {
+        arr.add(_Protocol.HoldingRegisters[i].value * _Protocol.HoldingRegisters[i].multiplier);
       } else {
-        arr.add(_round2(_Protocol.HoldingRegisters[i].value *
-                        _Protocol.HoldingRegisters[i].multiplier));
+        arr.add(_round2(_Protocol.HoldingRegisters[i].value * _Protocol.HoldingRegisters[i].multiplier));
       }
-      if (strcmp(_Protocol.HoldingRegisters[i].name, "InverterStatus") == 0 &&
-          _Protocol.HoldingRegisters[i].value < statusStrLength) {
-        arr.add(statusStr[_Protocol.HoldingRegisters[i].value]);  // use unit
-                                                                  // for status
+      if (strcmp(_Protocol.HoldingRegisters[i].name, "InverterStatus") == 0 && _Protocol.HoldingRegisters[i].value < statusStrLength) {
+        arr.add(statusStr[_Protocol.HoldingRegisters[i].value]);  // use unit for status
       } else {
         arr.add(unitStr[_Protocol.HoldingRegisters[i].unit]);  // unit
       }

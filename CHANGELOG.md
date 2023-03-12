@@ -1,3 +1,8 @@
+## 2022-03-12 Fork - Husel2000
+* Forked from https://github.com/otti/Growatt_ShineWiFi-S
+* Modifyed Growatt124  - remove unused Registers
+* Added  Growatt  ModBus RTU Protocol Document
+
 ## 2020-10-22 Update
 * Added support for ShineWiFi-X (USB). The software will automatically detect on which kind of stick it is running.
 

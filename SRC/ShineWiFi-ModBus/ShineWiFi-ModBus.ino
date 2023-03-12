@@ -214,11 +214,11 @@ bool write_to_file(const char* file_name, String contents) {
 
 void loadConfig(MqttConfig* config)
 {
-    config->mqttserver = load_from_file(serverfile, "10.1.2.3");
+    config->mqttserver = load_from_file(serverfile, "192.168.200.44");
     config->mqttport = load_from_file(portfile, "1883");
-    config->mqtttopic = load_from_file(topicfile, "energy/solar");
-    config->mqttuser = load_from_file(userfile, "");
-    config->mqttpwd = load_from_file(secretfile, "");
+    config->mqtttopic = load_from_file(topicfile, "pv/garage_big");
+    config->mqttuser = load_from_file(userfile, "mqtt");
+    config->mqttpwd = load_from_file(secretfile, "mqtt");
 }
 
 void saveConfig(MqttConfig* config)
@@ -606,8 +606,8 @@ void loop()
     // Do it only every two minutes
     if ((now - WifiRetryTimer) > WIFI_RETRY_TIMER)
     {
-        if (Inverter.GetWiFiStickType() == Undef_stick)
-            InverterReconnect();
+if (Inverter.GetWiFiStickType() == Undef_stick)
+          InverterReconnect();
         WifiRetryTimer = now;
     }
 

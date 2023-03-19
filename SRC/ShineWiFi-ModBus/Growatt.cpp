@@ -330,7 +330,7 @@ void Growatt::CreateJson(char* Buffer, const char* MacAddress) {
 void Growatt::CreateUIJson(char* Buffer) {
   StaticJsonDocument<2048> doc;
   const char* unitStr[] = {"", "W", "kWh", "V", "A", "s", "%", "Hz", "°C"};
-  const char* statusStr[] = {"(Waiting)", "(Normal Operation)", "", "(Error)"};
+  const char* statusStr[] = {"(Waiting)", "(Normal Operation)", "State: 2", "(Error)", "State: 4", "State: 5", "State: 6", "EPS"};
   const int statusStrLength = sizeof(statusStr) / sizeof(char*);
 
 #if SIMULATE_INVERTER != 1
